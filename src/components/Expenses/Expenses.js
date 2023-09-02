@@ -5,27 +5,35 @@ import Card from "../UI/Card";
 import "./Expenses.css";
 
 const Expenses = (props) => {
-  const [filterYear, setFilteredYear] = useState("2020");
+  const [filteredYear, setFilteredYear] = useState("2020");
   const filterChangHnadler = (selectedYear) => {
     setFilteredYear(selectedYear);
   };
+
+  const filteredExpenses = props.items.filter((expense) => {
+    return expense.date.getFullYear().toString() === filteredYear;
+  });
 
   return (
     <>
       <Card className="expenses">
         <ExpensesFilter
-          selected={filterYear}
+          selected={filteredYear}
           onChangeFilter={filterChangHnadler}
         />
 
-        {props.items.map((expense) => (
-          <ExpenseItem
-            key={expense.id} // we can use index as well but it's not best prectice
-            title={expense.title}
-            amount={expense.amount}
-            date={expense.date}
-          />
-        ))}
+        {filteredExpenses.length === 0 ? (
+          <p>No Expenses found</p>
+        ) : (
+          filteredExpenses.map((expense) => (
+            <ExpenseItem
+              key={expense.id}
+              title={expense.title}
+              amount={expense.amount}
+              date={expense.date}
+            />
+          ))
+        )}
       </Card>
     </>
   );
